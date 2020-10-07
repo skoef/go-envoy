@@ -8,14 +8,14 @@ type DevControl struct {
 // Device describes a device attached to the Envoy system
 type Device struct {
 	PartNum        string       `json:"part_num,omitempty"`
-	Installed      int          `json:"installed,omitempty"`
-	SerialNum      int          `json:"serial_num,omitempty"`
+	Installed      string       `json:"installed,omitempty"`
+	SerialNum      string       `json:"serial_num,omitempty"`
 	DeviceStatus   []string     `json:"device_status,omitempty"`
-	LastReportDate int          `json:"last_report_date,omitempty"`
+	LastReportDate string       `json:"last_report_date,omitempty"`
 	AdminState     int          `json:"admin_state,omitempty"`
 	DevType        int          `json:"dev_type,omitempty"`
-	CreatedDate    int          `json:"created_date,omitempty"`
-	ImgLoadDate    int          `json:"img_load_date,omitempty"`
+	CreatedDate    string       `json:"created_date,omitempty"`
+	ImgLoadDate    string       `json:"img_load_date,omitempty"`
 	ImgPnumRunning string       `json:"img_pnum_running,omitempty"`
 	Ptpn           string       `json:"ptpn,omitempty"`
 	Chaneid        int          `json:"chaneid,omitempty"`
