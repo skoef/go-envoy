@@ -2,8 +2,10 @@ package envoy
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -36,30 +38,54 @@ func NewClientWithHTTP(address string, client *http.Client) *Client {
 	}
 }
 
-func (c *Client) get(url string, response interface{}) error {
+func (c *Client) get(url string) ([]byte, error) {
 	resp, err := c.client.Get(fmt.Sprintf("http://%s%s", c.address, url))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return ErrNotOK
+		return nil, ErrNotOK
 	}
 
-	return json.NewDecoder(resp.Body).Decode(response)
+	return io.ReadAll(resp.Body)
+}
+
+func (c *Client) getJSON(url string, response interface{}) error {
+	data, err := c.get(url)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(data, &response)
+}
+
+func (c *Client) getXML(url string, response interface{}) error {
+	data, err := c.get(url)
+	if err != nil {
+		return err
+	}
+
+	return xml.Unmarshal(data, &response)
 }
 
 // Inventory returns the list of parts installed in the system and registered with the Envoy unit
 func (c *Client) Inventory() ([]Inventory, error) {
 	var inventory []Inventory
-	err := c.get("/inventory.json?deleted=1", &inventory)
+	err := c.getJSON("/inventory.json?deleted=1", &inventory)
 	return inventory, err
 }
 
 // Production returns the current data for Production and Consumption sensors, if equipped.
 func (c *Client) Production() (Production, error) {
 	var production Production
-	err := c.get("/production.json?details=1", &production)
+	err := c.getJSON("/production.json?details=1", &production)
 	return production, err
+}
+
+func (c *Client) Info() (Info, error) {
+	var info Info
+	err := c.getXML("/info.xml", &info)
+	return info, err
 }

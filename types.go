@@ -62,3 +62,28 @@ type Production struct {
 	Consumption []ProductionData `json:"consumption,omitempty"`
 	Storage     []ProductionData `json:"storage,omitempty"`
 }
+
+// Info is information about the IQ envoy itself
+// somehow this is in XML instead of JSON
+type Info struct {
+	Time   string `xml:"time"`
+	Device struct {
+		Sn       string `xml:"sn"`
+		Pn       string `xml:"pn"`
+		Software string `xml:"software"`
+		Euaid    string `xml:"euaid"`
+		Seqnum   string `xml:"seqnum"`
+		Apiver   string `xml:"apiver"`
+		Imeter   string `xml:"imeter"`
+	} `xml:"device"`
+	Package []struct {
+		Name    string `xml:"name,attr"`
+		Pn      string `xml:"pn"`
+		Version string `xml:"version"`
+		Build   string `xml:"build"`
+	} `xml:"package"`
+	BuildInfo struct {
+		BuildTimeGmt string `xml:"build_time_gmt"`
+		BuildID      string `xml:"build_id"`
+	} `xml:"build_info"`
+}
